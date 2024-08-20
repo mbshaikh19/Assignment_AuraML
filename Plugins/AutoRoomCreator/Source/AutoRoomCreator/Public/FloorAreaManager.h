@@ -23,6 +23,7 @@ private:
 	FVector2D areaMin;
 	FVector2D areaMax;
 	TArray<AParentArea*> spawnedSubareas;
+	FRandomStream randomStream;
 
 protected:
 	// Called when the game starts or when spawned
@@ -37,6 +38,11 @@ public:
 	void FitIntoArea();
 
 	void SpawnAndMakeList();
+
+	void RandomizePlacement();
+
+	UFUNCTION(BlueprintCallable)
+	void SetRandomSeed(int seedValue);
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ParentArea)

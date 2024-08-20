@@ -2,6 +2,7 @@
 
 
 #include "FloorAreaManager.h"
+#include "Math/UnrealMathUtility.h"
 #include "ParentArea.h"
 
 // Sets default values
@@ -32,7 +33,8 @@ void AFloorAreaManager::BeginPlay()
 		areaMin = FVector2D(BoxCenter.X - BoxExtent.X, BoxCenter.Y - BoxExtent.Y);
 		areaMax = FVector2D(BoxCenter.X + BoxExtent.X, BoxCenter.X + BoxExtent.X);
 	}
-    SpawnAndMakeList();
+
+    SetRandomSeed(20);
 }
 
 // Called every frame
@@ -121,6 +123,23 @@ void AFloorAreaManager::SpawnAndMakeList()
         //SortInDescendingOrder();
         FitIntoArea();
     }
+}
+
+void AFloorAreaManager::RandomizePlacement()
+{
+    for (int index = subareasToSpawn.Num() - 1; index > 0; --index)
+    {
+        int randomElement = randomStream.RandHelper(index);
+        subareasToSpawn.Swap(index, randomElement);
+    }
+    SpawnAndMakeList();
+}
+
+void AFloorAreaManager::SetRandomSeed(int seedValue)
+{
+    randomStream.Initialize(seedValue);
+    RandomizePlacement();
+    
 }
 
 
