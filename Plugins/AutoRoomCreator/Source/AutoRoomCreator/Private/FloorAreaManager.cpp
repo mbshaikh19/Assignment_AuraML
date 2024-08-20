@@ -34,7 +34,7 @@ void AFloorAreaManager::BeginPlay()
 		areaMax = FVector2D(BoxCenter.X + BoxExtent.X, BoxCenter.X + BoxExtent.X);
 	}
 
-    SetRandomSeed(20);
+    //SetRandomSeed(20);
 }
 
 // Called every frame
@@ -85,10 +85,9 @@ void AFloorAreaManager::FitIntoArea()
             else if (bDoesRotatedBoxFit)
             {
                 fitBoxSize = RotatedBoxSize;
-                BoxRotation = FRotator(0, 90, 0);  // Rotate 90 degrees around Z-axis
+                BoxRotation = FRotator(0, 90, 0);
             }
 
-            // Place the box at the current 2D position with the chosen rotation
             FVector NewLocation(CurrentPosition.X + fitBoxSize.X / 2, CurrentPosition.Y + fitBoxSize.Y / 2, 0.0f);
             subarea->SetActorLocation(NewLocation);
             subarea->SetActorRotation(BoxRotation);
@@ -104,6 +103,8 @@ void AFloorAreaManager::FitIntoArea()
         }
         else
         {
+            subarea->Destroy();
+            spawnedSubareas.Remove(subarea);
             // Handle the case where the box doesn't fit
             UE_LOG(LogTemp, Warning, TEXT("Box %s does not fit in the defined area"), *subarea->GetName());
         }
@@ -137,8 +138,18 @@ void AFloorAreaManager::RandomizePlacement()
 
 void AFloorAreaManager::SetRandomSeed(int seedValue)
 {
+    ClearPreviousResult();
     randomStream.Initialize(seedValue);
     RandomizePlacement();
+}
+
+void AFloorAreaManager::ClearPreviousResult()
+{
+    for (auto spawnedArea : spawnedSubareas)
+    {
+        spawnedArea->Destroy();
+    }
+    spawnedSubareas.Empty();
 }
 
 

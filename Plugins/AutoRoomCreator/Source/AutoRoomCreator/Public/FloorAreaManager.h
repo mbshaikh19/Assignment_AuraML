@@ -44,6 +44,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetRandomSeed(int seedValue);
 
+	void ClearPreviousResult();
+
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ParentArea)
 	UBoxComponent* boxComponent;
