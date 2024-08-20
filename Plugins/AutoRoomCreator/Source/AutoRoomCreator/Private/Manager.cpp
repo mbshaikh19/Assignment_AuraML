@@ -4,6 +4,7 @@
 #include "Manager.h"
 #include "Math/UnrealMathUtility.h"
 #include "Engine/World.h"
+#include "ParentArea.h"
 
 // Sets default values
 AManager::AManager()
@@ -72,21 +73,27 @@ void AManager::SetupCollisionBoxes()
 
         if (bPositionFound)
         {
-            UBoxComponent* BoxComponent = NewObject<UBoxComponent>(this);
-            BoxComponent->RegisterComponent();
-            BoxComponent->SetBoxExtent(Size / 2);
-            BoxComponent->SetWorldLocation(Position);
-            BoxComponent->SetCollisionProfileName(TEXT("BlockAll"));
-            BoxComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-            CollisionBoxes.Add(BoxComponent);
+            AParentArea* parentArea = GetWorld()->SpawnActor<AParentArea>(AParentArea::StaticClass(), Position, FRotator::ZeroRotator);
+            //UBoxComponent* BoxComponent = NewObject<UBoxComponent>(this);
+            //BoxComponent->RegisterComponent();
+            parentArea->boxComponent->SetBoxExtent(Size / 2);
+            //BoxComponent->SetBoxExtent(Size / 2);
+            //BoxComponent->SetWorldLocation(Position);
+            //BoxComponent->SetCollisionProfileName(TEXT("BlockAll"));
+            //BoxComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+            //BoxComponent->SetVisibility(true);
+            //CollisionBoxes.Add(BoxComponent);
+            UE_LOG(LogTemp, Warning, TEXT("oooo Placed all boxes without overlap."));
         }
         else
         {
-            UE_LOG(LogTemp, Warning, TEXT("Failed to place all boxes without overlap."));
+            UE_LOG(LogTemp, Warning, TEXT("oooo Failed to place all boxes without overlap."));
         }
 
         Attempts = 0; // Reset attempts for the next box
     }
+
+    //UE_LOG(LogTemp, Warning, TEXT("oooo component[0] location = %s "), *(CollisionBoxes[0]->GetComponentLocation().ToString()));
 }
 
 bool AManager::IsPositionValid(const FVector& Position, const FVector& Size) const

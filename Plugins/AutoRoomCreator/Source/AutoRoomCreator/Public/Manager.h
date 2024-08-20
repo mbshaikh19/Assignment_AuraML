@@ -7,6 +7,20 @@
 #include "GameFramework/Actor.h"
 #include "Manager.generated.h"
 
+
+// Struct to hold box size and other related properties
+USTRUCT()
+struct FBoxInfo
+{
+    GENERATED_BODY()
+
+        FVector Size; // Size of the box
+    FVector Position; // Position of the box
+
+    FBoxInfo() : Size(FVector::ZeroVector), Position(FVector::ZeroVector) {}
+    FBoxInfo(const FVector& InSize, const FVector& InPosition) : Size(InSize), Position(InPosition) {}
+};
+
 UCLASS()
 class AUTOROOMCREATOR_API AManager : public AActor
 {
@@ -25,21 +39,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-    // Struct to hold box size and other related properties
-    USTRUCT()
-    struct FBoxInfo
-    {
-        GENERATED_BODY()
-
-            FVector Size; // Size of the box
-        FVector Position; // Position of the box
-
-        FBoxInfo() : Size(FVector::ZeroVector), Position(FVector::ZeroVector) {}
-        FBoxInfo(const FVector& InSize, const FVector& InPosition) : Size(InSize), Position(InPosition) {}
-    };
 
     // Array to hold box components
-    TArray<UBoxComponent*> CollisionBoxes;
+    //TArray<UBoxComponent*> CollisionBoxes;
     TArray<FBoxInfo> BoxInfos; // Store sizes and positions
 
     // Seed for random number generation
