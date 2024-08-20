@@ -118,7 +118,7 @@ void AFloorAreaManager::SpawnAndMakeList()
 
     if (spawnedSubareas.Num() > 0)
     {
-        SortInDescendingOrder();
+        //SortInDescendingOrder();
         FitIntoArea();
     }
 }
