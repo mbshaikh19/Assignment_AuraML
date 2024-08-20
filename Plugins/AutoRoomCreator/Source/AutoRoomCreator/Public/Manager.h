@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "Manager.generated.h"
 
@@ -22,5 +23,41 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+private:
+    // Struct to hold box size and other related properties
+    USTRUCT()
+    struct FBoxInfo
+    {
+        GENERATED_BODY()
+
+            FVector Size; // Size of the box
+        FVector Position; // Position of the box
+
+        FBoxInfo() : Size(FVector::ZeroVector), Position(FVector::ZeroVector) {}
+        FBoxInfo(const FVector& InSize, const FVector& InPosition) : Size(InSize), Position(InPosition) {}
+    };
+
+    // Array to hold box components
+    TArray<UBoxComponent*> CollisionBoxes;
+    TArray<FBoxInfo> BoxInfos; // Store sizes and positions
+
+    // Seed for random number generation
+    UPROPERTY(EditAnywhere, Category = "Randomization")
+    int32 RandomSeed;
+
+    // Number of boxes to place
+    UPROPERTY(EditAnywhere, Category = "Settings")
+    int32 NumberOfBoxes;
+
+    // Room size (for example, width and length)
+    UPROPERTY(EditAnywhere, Category = "Settings")
+    FVector RoomDimensions;
+
+    // Function to initialize and place collision boxes
+    void SetupCollisionBoxes();
+
+    // Helper function to check overlap
+    bool IsPositionValid(const FVector& Position, const FVector& Size) const;
 
 };
