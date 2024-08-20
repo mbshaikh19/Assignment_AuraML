@@ -31,3 +31,10 @@ void AParentArea::Tick(float DeltaTime)
 
 }
 
+FVector AParentArea::GetAreaSize()
+{
+	if (boxComponent)
+		return boxComponent->GetScaledBoxExtent() *2.f;
+	return FVector::ZeroVector;
+}
+

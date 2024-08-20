@@ -14,14 +14,15 @@ AManager::AManager()
 
 	// Set default values
 	RandomSeed = 1234; // Default seed value
-	NumberOfBoxes = 3;
-	RoomDimensions = FVector(1000.f, 1000.f, 100.f);
+	
+	RoomDimensions = FVector(600.f, 600.f, 100.f);
 }
 
 // Called when the game starts or when spawned
 void AManager::BeginPlay()
 {
 	Super::BeginPlay();
+    NumberOfBoxes = subareasToSpawn.Num();
     SetupCollisionBoxes();
 }
 
@@ -43,12 +44,15 @@ void AManager::SetupCollisionBoxes()
 
     for (int32 i = 0; i < NumberOfBoxes; ++i)
     {
-        FVector Size(
-            RandomStream.FRandRange(30.f, 100.f), // Random size in X
-            RandomStream.FRandRange(30.f, 100.f), // Random size in Y
-            RandomStream.FRandRange(30.f, 100.f)  // Random size in Z
-        );
-
+        //FVector Size(
+        //    RandomStream.FRandRange(30.f, 100.f), // Random size in X
+        //    RandomStream.FRandRange(30.f, 100.f), // Random size in Y
+        //    RandomStream.FRandRange(30.f, 100.f)  // Random size in Z
+        //);
+        AParentArea* parentArea = GetWorld()->SpawnActor<AParentArea>(subareasToSpawn[i], FVector::ZeroVector, FRotator::ZeroRotator);
+        
+        FVector Size = parentArea->GetAreaSize();
+        UE_LOG(LogTemp, Warning, TEXT("oooo %s size = %s "), *(parentArea->GetName()), *(Size.ToString()));
         FVector Position;
         bool bPositionFound = false;
 
@@ -58,7 +62,7 @@ void AManager::SetupCollisionBoxes()
             Position = FVector(
                 RandomStream.FRandRange(-RoomDimensions.X / 2 + Size.X / 2, RoomDimensions.X / 2 - Size.X / 2),
                 RandomStream.FRandRange(-RoomDimensions.Y / 2 + Size.Y / 2, RoomDimensions.Y / 2 - Size.Y / 2),
-                Size.Z / 2 // Position the box on the floor
+                0.0f//Size.Z / 2 // Position the box on the floor
             );
 
             if (IsPositionValid(Position, Size))
@@ -73,10 +77,11 @@ void AManager::SetupCollisionBoxes()
 
         if (bPositionFound)
         {
-            AParentArea* parentArea = GetWorld()->SpawnActor<AParentArea>(AParentArea::StaticClass(), Position, FRotator::ZeroRotator);
+            //AParentArea* parentArea = GetWorld()->SpawnActor<AParentArea>(subareasToSpawn[i], Position, FRotator::ZeroRotator);
             //UBoxComponent* BoxComponent = NewObject<UBoxComponent>(this);
             //BoxComponent->RegisterComponent();
-            parentArea->boxComponent->SetBoxExtent(Size / 2);
+            //parentArea->boxComponent->SetBoxExtent(Size / 2);
+            parentArea->SetActorLocation(Position);
             //BoxComponent->SetBoxExtent(Size / 2);
             //BoxComponent->SetWorldLocation(Position);
             //BoxComponent->SetCollisionProfileName(TEXT("BlockAll"));
@@ -87,6 +92,7 @@ void AManager::SetupCollisionBoxes()
         }
         else
         {
+            parentArea->Destroy();
             UE_LOG(LogTemp, Warning, TEXT("oooo Failed to place all boxes without overlap."));
         }
 

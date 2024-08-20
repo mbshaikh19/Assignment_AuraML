@@ -32,4 +32,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ParentArea)
 	USceneComponent* sceneComponent;
+
+public:
+
+	UFUNCTION()
+	FVector GetAreaSize();
 };

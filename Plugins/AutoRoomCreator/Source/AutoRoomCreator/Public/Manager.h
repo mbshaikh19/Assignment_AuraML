@@ -38,6 +38,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subarea")
+    TArray<TSubclassOf<class AParentArea>> subareasToSpawn;
+
 private:
 
     // Array to hold box components
