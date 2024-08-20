@@ -22,6 +22,7 @@ void AParentArea::BeginPlay()
 	Super::BeginPlay();
 	boxComponent->SetVisibility(true);
 	boxComponent->bHiddenInGame = false;
+	boxComponent->GetScaledBoxExtent().GetMax();
 }
 
 // Called every frame
@@ -36,5 +37,10 @@ FVector AParentArea::GetAreaSize()
 	if (boxComponent)
 		return boxComponent->GetScaledBoxExtent() *2.f;
 	return FVector::ZeroVector;
+}
+
+double AParentArea::GetSize() const
+{
+	return boxComponent->GetScaledBoxExtent().Length();
 }
 

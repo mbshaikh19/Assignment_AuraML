@@ -3,19 +3,26 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "Components/SceneComponent.h"
-#include "GameFramework/Actor.h"
-#include "ParentArea.generated.h"
+#include "FloorAreaManager.generated.h"
+
+class AParentArea;
 
 UCLASS()
-class AUTOROOMCREATOR_API AParentArea : public AActor
+class AUTOROOMCREATOR_API AFloorAreaManager : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AParentArea();
+	AFloorAreaManager();
+
+private:
+	FVector2D areaMin;
+	FVector2D areaMax;
+	TArray<AParentArea*> spawnedSubareas;
 
 protected:
 	// Called when the game starts or when spawned
@@ -25,18 +32,19 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-public:
+	void SortInDescendingOrder();
 
+	void FitIntoArea();
+
+	void SpawnAndMakeList();
+
+public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ParentArea)
 	UBoxComponent* boxComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ParentArea)
 	USceneComponent* sceneComponent;
 
-public:
-
-	UFUNCTION()
-	FVector GetAreaSize();
-
-	double GetSize() const;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subarea")
+	TArray<TSubclassOf<class AParentArea>> subareasToSpawn;
 };
