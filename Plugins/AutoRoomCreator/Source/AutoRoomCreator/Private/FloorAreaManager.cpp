@@ -139,7 +139,6 @@ void AFloorAreaManager::SetRandomSeed(int seedValue)
 {
     randomStream.Initialize(seedValue);
     RandomizePlacement();
-    
 }
 
 
