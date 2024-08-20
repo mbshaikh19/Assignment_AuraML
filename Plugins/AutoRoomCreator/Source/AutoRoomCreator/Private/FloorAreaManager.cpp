@@ -33,7 +33,6 @@ void AFloorAreaManager::BeginPlay()
 		areaMin = FVector2D(BoxCenter.X - BoxExtent.X, BoxCenter.Y - BoxExtent.Y);
 		areaMax = FVector2D(BoxCenter.X + BoxExtent.X, BoxCenter.X + BoxExtent.X);
 	}
-
     //SetRandomSeed(20);
 }
 
