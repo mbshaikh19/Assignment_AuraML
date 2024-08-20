@@ -8,8 +8,12 @@ AParentArea::AParentArea()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	boxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("ParentBoxComp"));
-	RootComponent = boxComponent;
+	
+	sceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ParentComp"));
+	RootComponent = sceneComponent;
+
+	boxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComp"));
+	boxComponent->AttachToComponent(sceneComponent,FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called when the game starts or when spawned

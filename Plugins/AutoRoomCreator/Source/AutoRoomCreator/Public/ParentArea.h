@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/BoxComponent.h"
+#include "Components/SceneComponent.h"
 #include "GameFramework/Actor.h"
 #include "ParentArea.generated.h"
 
@@ -26,7 +27,9 @@ public:
 
 public:
 
-	UPROPERTY(VisibleAnywhere, Category = ParentArea)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ParentArea)
 	UBoxComponent* boxComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ParentArea)
+	USceneComponent* sceneComponent;
 };
