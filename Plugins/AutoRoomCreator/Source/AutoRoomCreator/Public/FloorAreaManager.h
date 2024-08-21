@@ -25,6 +25,8 @@ private:
 	TArray<AParentArea*> spawnedSubareas;
 	FRandomStream randomStream;
 
+	static AFloorAreaManager* floorAreaManagerPtr;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -44,7 +46,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetRandomSeed(int seedValue);
 
+	FRandomStream GetRandomSeed() const;
+
 	void ClearPreviousResult();
+
+	static AFloorAreaManager* GetFloorAreaManagerPtr();
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ParentArea)

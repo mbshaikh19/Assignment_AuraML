@@ -25,16 +25,21 @@ void URoomGenratorWidget::OnButtonClicked()
         int32 newSeed = 0;
         if(FDefaultValueHelper::ParseInt(seedInputTextBox->GetText().ToString(), newSeed))
         {
-            TArray<AActor*> floorAreaManagers;
-            UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFloorAreaManager::StaticClass(), floorAreaManagers);
-            if (floorAreaManagers.Num() > 0)
+            if (AFloorAreaManager::GetFloorAreaManagerPtr())
             {
-                if (Cast<AFloorAreaManager>(floorAreaManagers[0]))
-                {
-                    Cast<AFloorAreaManager>(floorAreaManagers[0])->SetRandomSeed(newSeed);
-                    UE_LOG(LogTemp, Warning, TEXT("oooo Valid input seed."));
-                }
+                AFloorAreaManager::GetFloorAreaManagerPtr()->SetRandomSeed(newSeed);
+                UE_LOG(LogTemp, Warning, TEXT("oooo Valid input seed."));
             }
+            //TArray<AActor*> floorAreaManagers;
+            //UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFloorAreaManager::StaticClass(), floorAreaManagers);
+            //if (floorAreaManagers.Num() > 0)
+            //{
+            //    if (Cast<AFloorAreaManager>(floorAreaManagers[0]))
+            //    {
+            //        Cast<AFloorAreaManager>(floorAreaManagers[0])->SetRandomSeed(newSeed);
+            //        
+            //    }
+            //}
         }
         else {
             UE_LOG(LogTemp, Warning, TEXT("oooo Invalid input seed."));

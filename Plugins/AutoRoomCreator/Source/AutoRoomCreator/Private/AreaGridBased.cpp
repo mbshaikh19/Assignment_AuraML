@@ -5,7 +5,7 @@
 
 void AAreaGridBased::BeginPlay()
 {
-	UActorComponent *actorComp = GetComponentByClass(UStaticMeshComponent::StaticClass());
+	/*UActorComponent *actorComp = GetComponentByClass(UStaticMeshComponent::StaticClass());
 	if (actorComp)
 	{
 		UStaticMeshComponent* staticComp = Cast<UStaticMeshComponent>(actorComp);
@@ -18,7 +18,14 @@ void AAreaGridBased::BeginPlay()
 				GetWorld()->SpawnActor<AActor>(objectsToSpawnList[0], FloorPosition, FRotator::ZeroRotator);
 			}
 		}
-	}
+	}*/
+
+
+}
+
+AAreaGridBased::AAreaGridBased()
+{
+	//objetStaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Object"));
 }
 
 void AAreaGridBased::Tick(float DeltaTime)

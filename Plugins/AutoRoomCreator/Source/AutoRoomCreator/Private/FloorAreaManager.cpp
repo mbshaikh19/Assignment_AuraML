@@ -5,6 +5,8 @@
 #include "Math/UnrealMathUtility.h"
 #include "ParentArea.h"
 
+AFloorAreaManager* AFloorAreaManager::floorAreaManagerPtr = nullptr;
+
 // Sets default values
 AFloorAreaManager::AFloorAreaManager()
 {
@@ -22,6 +24,11 @@ AFloorAreaManager::AFloorAreaManager()
 void AFloorAreaManager::BeginPlay()
 {
 	Super::BeginPlay();
+
+    if (floorAreaManagerPtr == nullptr)
+    {
+        floorAreaManagerPtr = this;
+    }
 
 	if (boxComponent)
 	{
@@ -142,6 +149,7 @@ void AFloorAreaManager::SetRandomSeed(int seedValue)
     RandomizePlacement();
 }
 
+
 void AFloorAreaManager::ClearPreviousResult()
 {
     for (auto spawnedArea : spawnedSubareas)
@@ -149,6 +157,17 @@ void AFloorAreaManager::ClearPreviousResult()
         spawnedArea->Destroy();
     }
     spawnedSubareas.Empty();
+}
+
+
+FRandomStream AFloorAreaManager::GetRandomSeed() const
+{
+    return randomStream;
+}
+
+AFloorAreaManager* AFloorAreaManager::GetFloorAreaManagerPtr()
+{
+    return floorAreaManagerPtr;
 }
 
 

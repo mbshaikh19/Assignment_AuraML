@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ParentArea.h"
+#include "Components/StaticMeshComponent.h"
 #include "AreaGridBased.generated.h"
 
 /**
@@ -19,10 +20,14 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+
+	AAreaGridBased();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Area")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Objects")
 	TArray<TSubclassOf<AActor>> objectsToSpawnList;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Objects")
+	UStaticMeshComponent* objetStaticMeshComp;
 };
