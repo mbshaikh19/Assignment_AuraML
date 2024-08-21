@@ -12,16 +12,22 @@ UMiniAreaComponent::UMiniAreaComponent()
 
 void UMiniAreaComponent::BeginPlay()
 {
+	Super::BeginPlay();
+	if (AFloorAreaManager::GetFloorAreaManagerPtr())
+	{
+		FScopeLock Lock(&delegateLock);
+		AFloorAreaManager::GetFloorAreaManagerPtr()->onSeedModify.AddDynamic(this, &UMiniAreaComponent::SetRandomSeed);
+		UE_LOG(LogTemp, Warning, TEXT("oooo UMiniAreaComponent BeginPlay binding DONE"));
+	}
+	//if (placeableObjectsList.Num() > 0)
+	//{
+	//	SpawnPlaceableActors();
+	//}
+}
 
-	if (placeableObjectsList.Num() > 1)
-	{
-		SpawnPlaceableActors();
-	}
-	else if (placeableObjectsList.Num() == 1)
-	{
-		APlaceableActor* spawnedTempPtr = GetWorld()->SpawnActor<APlaceableActor>(placeableObjectsList[0], GetComponentLocation(), FRotator::ZeroRotator);
-		spawnedPlaceableObjects.Add(spawnedTempPtr);
-	}
+void UMiniAreaComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
 }
 
 void UMiniAreaComponent::GenerateSpawnLocations()
@@ -55,13 +61,19 @@ void UMiniAreaComponent::GenerateSpawnLocations()
 
 void UMiniAreaComponent::SpawnPlaceableActors()
 {
+	FVector tempLocation = FVector::ZeroVector;
+	if (spawnedPlaceableObjects.Num() == 1)
+	{
+		tempLocation = GetComponentLocation();
+	}
+
 	for (int32 index = 0; index < placeableObjectsList.Num(); index++)
 	{
-		APlaceableActor* spawnedTempPtr = GetWorld()->SpawnActor<APlaceableActor>(placeableObjectsList[index], FVector::ZeroVector, FRotator::ZeroRotator);
+		APlaceableActor* spawnedTempPtr = GetWorld()->SpawnActor<APlaceableActor>(placeableObjectsList[index], tempLocation, FRotator::ZeroRotator);
 		spawnedPlaceableObjects.Add(spawnedTempPtr);
 	}
 
-	if (spawnedPlaceableObjects.Num() > 0)
+	if (spawnedPlaceableObjects.Num() > 1)
 	{
 		SortInDescendingOrder();
 		GenerateSpawnLocations();
@@ -81,3 +93,27 @@ void UMiniAreaComponent::SortInDescendingOrder()
 			return sizeA > sizeB;
 		});
 }
+
+void UMiniAreaComponent::SetRandomSeed(int seedValue)
+{
+	if (spawnedPlaceableObjects.Num() > 0)
+	{
+		ClearPreviousResult();
+		SpawnPlaceableActors();
+	}
+}
+
+void UMiniAreaComponent::ClearPreviousResult()
+{
+
+	for (int32 index = 0; index < spawnedPlaceableObjects.Num(); index++)
+	{
+		if (spawnedPlaceableObjects[index])
+		{
+			spawnedPlaceableObjects[index]->Destroy();
+		}
+	}
+	spawnedPlaceableObjects.Empty();
+
+}
+

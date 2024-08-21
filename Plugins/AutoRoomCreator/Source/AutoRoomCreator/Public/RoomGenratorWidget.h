@@ -26,6 +26,10 @@ protected:
     UPROPERTY(meta = (BindWidget))
     UEditableTextBox* seedInputTextBox;
 
+    FCriticalSection delegateLock;
+
     UFUNCTION()
     void OnButtonClicked();
+
+    //void TriggerEvent(int32 Value);
 };

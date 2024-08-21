@@ -25,6 +25,11 @@ void AFloorAreaManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+    //FOnSeedModify::FDelegate delegate;
+    //delegate.BindUFunction(this, TEXT("SetRandomSeed"));
+    //AddBinding(this, delegate);
+    FScopeLock Lock(&delegateLock);
+    onSeedModify.AddDynamic(this, &AFloorAreaManager::SetRandomSeed);
     if (floorAreaManagerPtr == nullptr)
     {
         floorAreaManagerPtr = this;
@@ -41,6 +46,13 @@ void AFloorAreaManager::BeginPlay()
 		areaMax = FVector2D(BoxCenter.X + BoxExtent.X, BoxCenter.X + BoxExtent.X);
 	}
     //SetRandomSeed(20);
+}
+
+void AFloorAreaManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    Super::EndPlay(EndPlayReason);
+    onSeedModify.Clear();
+    UE_LOG(LogTemp, Warning, TEXT("oooo delegate cleared"));
 }
 
 // Called every frame
@@ -65,8 +77,9 @@ void AFloorAreaManager::FitIntoArea()
 {
     FVector2D CurrentPosition = areaMin;
 
-    for (AParentArea* subarea : spawnedSubareas)
+    for (int32 index = 0; index < spawnedSubareas.Num(); index++)
     {
+        AParentArea* subarea = spawnedSubareas[index];
         if (!subarea) 
             continue;
 
@@ -144,6 +157,7 @@ void AFloorAreaManager::RandomizePlacement()
 
 void AFloorAreaManager::SetRandomSeed(int seedValue)
 {
+    UE_LOG(LogTemp, Warning, TEXT("oooo Valid input seed received in floor area manager."));
     ClearPreviousResult();
     randomStream.Initialize(seedValue);
     RandomizePlacement();
@@ -152,11 +166,17 @@ void AFloorAreaManager::SetRandomSeed(int seedValue)
 
 void AFloorAreaManager::ClearPreviousResult()
 {
-    for (auto spawnedArea : spawnedSubareas)
+    if (spawnedSubareas.Num() > 0)
     {
-        spawnedArea->Destroy();
+        for (int32 index = 0; index < spawnedSubareas.Num(); index++)
+        {
+            if (spawnedSubareas[index]->IsValidLowLevel())
+            {
+                spawnedSubareas[index]->Destroy();
+            }
+        }
+        spawnedSubareas.Empty();
     }
-    spawnedSubareas.Empty();
 }
 
 
@@ -169,5 +189,19 @@ AFloorAreaManager* AFloorAreaManager::GetFloorAreaManagerPtr()
 {
     return floorAreaManagerPtr;
 }
+
+//void AFloorAreaManager::AddBinding(UObject* object, TBaseDynamicDelegate<FNotThreadSafeDelegateMode, void, int32> delegate)
+//{
+//    FScopeLock Lock(&delegateLock);
+//    onSeedModify.AddDynamic(this, delegate);
+//    UE_LOG(LogTemp, Warning, TEXT("oooo AddBinding called."));
+//}
+//
+//void AFloorAreaManager::ClearAllBindings()
+//{
+//    FScopeLock Lock(&delegateLock);
+//    onSeedModify.Clear();
+//    UE_LOG(LogTemp, Warning, TEXT("oooo ClearAllBindings called."));
+//}
 
 

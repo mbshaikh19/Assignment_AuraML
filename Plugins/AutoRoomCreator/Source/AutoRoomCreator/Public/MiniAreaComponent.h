@@ -23,9 +23,13 @@ public:
 	TArray<TSubclassOf<APlaceableActor>> placeableObjectsList;
 
 	TArray<APlaceableActor*> spawnedPlaceableObjects;
+
+	FCriticalSection delegateLock;
 	
 protected:
 	virtual void BeginPlay() override;
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
 	UMiniAreaComponent();
@@ -35,4 +39,9 @@ public:
 	void SpawnPlaceableActors();
 
 	void SortInDescendingOrder();
+
+	UFUNCTION()
+	void SetRandomSeed(int seedValue);
+
+	void ClearPreviousResult();
 };

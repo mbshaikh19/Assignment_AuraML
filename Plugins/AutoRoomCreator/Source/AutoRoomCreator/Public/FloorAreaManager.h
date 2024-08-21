@@ -10,6 +10,8 @@
 
 class AParentArea;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSeedModify, int32, inSeed);
+
 UCLASS()
 class AUTOROOMCREATOR_API AFloorAreaManager : public AActor
 {
@@ -27,9 +29,13 @@ private:
 
 	static AFloorAreaManager* floorAreaManagerPtr;
 
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:	
 	// Called every frame
@@ -43,7 +49,7 @@ public:
 
 	void RandomizePlacement();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void SetRandomSeed(int seedValue);
 
 	FRandomStream GetRandomSeed() const;
@@ -51,6 +57,10 @@ public:
 	void ClearPreviousResult();
 
 	static AFloorAreaManager* GetFloorAreaManagerPtr();
+
+	//void TriggerEvent(int32 Value);
+	//void AddBinding(UObject* object, TBaseDynamicDelegate<FNotThreadSafeDelegateMode,void,int32> delegate);
+	//void ClearAllBindings();
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ParentArea)
@@ -61,4 +71,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subarea")
 	TArray<TSubclassOf<class AParentArea>> subareasToSpawn;
+
+	UPROPERTY()
+	FOnSeedModify onSeedModify;
+
+	FCriticalSection delegateLock;
 };
