@@ -22,7 +22,7 @@ void AParentArea::BeginPlay()
 	Super::BeginPlay();
 	boxComponent->SetVisibility(true);
 	boxComponent->bHiddenInGame = false;
-	boxComponent->GetScaledBoxExtent().GetMax();
+	//boxComponent->GetScaledBoxExtent().GetMax();
 }
 
 // Called every frame

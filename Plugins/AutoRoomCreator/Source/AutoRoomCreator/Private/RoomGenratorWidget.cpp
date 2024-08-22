@@ -27,30 +27,30 @@ void URoomGenratorWidget::OnButtonClicked()
         {
             //TriggerEvent(newSeed);
             
-            //TArray<AActor*> floorAreaManagers;
-            //UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFloorAreaManager::StaticClass(), floorAreaManagers);
-            //if (floorAreaManagers.Num() > 0)
-            //{
-            //    if (Cast<AFloorAreaManager>(floorAreaManagers[0]))
-            //    {
-            //        Cast<AFloorAreaManager>(floorAreaManagers[0])->SetRandomSeed(newSeed);
-            //        UE_LOG(LogTemp, Warning, TEXT("oooo Valid input seed. binding"));
-            //    }
-            //}
-
-                if (AFloorAreaManager::GetFloorAreaManagerPtr())
+            TArray<AActor*> floorAreaManagers;
+            UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFloorAreaManager::StaticClass(), floorAreaManagers);
+            if (floorAreaManagers.Num() > 0)
+            {
+                if (Cast<AFloorAreaManager>(floorAreaManagers[0]))
                 {
-                    if (AFloorAreaManager::GetFloorAreaManagerPtr()->onSeedModify.IsBound())
-                    {
-                        FScopeLock Lock(&delegateLock);
-                        AFloorAreaManager::GetFloorAreaManagerPtr()->onSeedModify.Broadcast(newSeed);
-                        UE_LOG(LogTemp, Warning, TEXT("oooo Valid input seed. binding"));
-                    }
-                     else
-                     {
-                         UE_LOG(LogTemp, Warning, TEXT("oooo Valid input seed. no binding"));
-                     }
+                    Cast<AFloorAreaManager>(floorAreaManagers[0])->SetRandomSeed(newSeed);
+                    UE_LOG(LogTemp, Warning, TEXT("oooo Valid input seed. binding"));
                 }
+            }
+
+                //if (AFloorAreaManager::GetFloorAreaManagerPtr())
+                //{
+                //    if (AFloorAreaManager::GetFloorAreaManagerPtr()->onSeedModify.IsBound())
+                //    {
+                //        FScopeLock Lock(&delegateLock);
+                //        AFloorAreaManager::GetFloorAreaManagerPtr()->onSeedModify.Broadcast(newSeed);
+                //        UE_LOG(LogTemp, Warning, TEXT("oooo Valid input seed. binding"));
+                //    }
+                //     else
+                //     {
+                //         UE_LOG(LogTemp, Warning, TEXT("oooo Valid input seed. no binding"));
+                //     }
+                //}
 
 
         }

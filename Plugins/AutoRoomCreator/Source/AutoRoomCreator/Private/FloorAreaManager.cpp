@@ -28,8 +28,13 @@ void AFloorAreaManager::BeginPlay()
     //FOnSeedModify::FDelegate delegate;
     //delegate.BindUFunction(this, TEXT("SetRandomSeed"));
     //AddBinding(this, delegate);
-    FScopeLock Lock(&delegateLock);
-    onSeedModify.AddDynamic(this, &AFloorAreaManager::SetRandomSeed);
+    ////FScopeLock Lock(&delegateLock);
+    //onSeedModify.AddDynamic(this, &AFloorAreaManager::SetRandomSeed);
+    ///*onSeedModify.AddLambda([this](int32 inSeed)
+    //{
+    //    SetRandomSeed(inSeed);
+    //    UE_LOG(LogTemp, Warning, TEXT("oooo AFloorAreaManager BeginPlay called"));
+    //});*/
     if (floorAreaManagerPtr == nullptr)
     {
         floorAreaManagerPtr = this;

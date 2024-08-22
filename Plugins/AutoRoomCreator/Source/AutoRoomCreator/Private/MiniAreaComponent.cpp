@@ -7,27 +7,45 @@
 
 UMiniAreaComponent::UMiniAreaComponent()
 {
-
+	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bStartWithTickEnabled = true;
+	SetComponentTickEnabled(true);
 }
 
 void UMiniAreaComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	SetVisibility(true);
 	if (AFloorAreaManager::GetFloorAreaManagerPtr())
 	{
-		FScopeLock Lock(&delegateLock);
-		AFloorAreaManager::GetFloorAreaManagerPtr()->onSeedModify.AddDynamic(this, &UMiniAreaComponent::SetRandomSeed);
-		UE_LOG(LogTemp, Warning, TEXT("oooo UMiniAreaComponent BeginPlay binding DONE"));
+		////FScopeLock Lock(&delegateLock);
+		//AFloorAreaManager::GetFloorAreaManagerPtr()->onSeedModify.AddDynamic(this, &UMiniAreaComponent::SetRandomSeed);
+		////AFloorAreaManager::GetFloorAreaManagerPtr()->onSeedModify.AddLambda([this](int32 inSeed)
+		////{
+		////	SetRandomSeed(inSeed);
+		////	UE_LOG(LogTemp, Warning, TEXT("oooo UMiniAreaComponent BeginPlay called"));
+		////});
+		//UE_LOG(LogTemp, Warning, TEXT("oooo UMiniAreaComponent BeginPlay binding DONE"));
 	}
 	//if (placeableObjectsList.Num() > 0)
 	//{
 	//	SpawnPlaceableActors();
 	//}
+	SetRandomSeed(50);
+}
+
+void UMiniAreaComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	FVector loc = GetAttachmentRoot()->GetComponentLocation() + GetRelativeLocation();
+	UE_LOG(LogTemp, Warning, TEXT("OOOO tick called 2 %s"), *(loc.ToString()));
 }
 
 void UMiniAreaComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
+	ClearPreviousResult();
+	UE_LOG(LogTemp, Warning, TEXT("oooo endplay in miniarea"));
 }
 
 void UMiniAreaComponent::GenerateSpawnLocations()
@@ -61,20 +79,30 @@ void UMiniAreaComponent::GenerateSpawnLocations()
 
 void UMiniAreaComponent::SpawnPlaceableActors()
 {
-	FVector tempLocation = FVector::ZeroVector;
-	if (spawnedPlaceableObjects.Num() == 1)
+	UE_LOG(LogTemp, Warning, TEXT("OOOO SpawnPlaceableActors called 1"));
+	//FVector tempLocation = FVector::ZeroVector;
+	if (placeableObjectsList.Num() == 1)
 	{
-		tempLocation = GetComponentLocation();
+		GetComponentLocation();
+		//tempLocation = GetComponentLocation();
+		
+		FVector loc = GetAttachmentRoot()->GetComponentLocation() + GetRelativeLocation();
+		UE_LOG(LogTemp, Warning, TEXT("OOOO SpawnPlaceableActors spawn() called 2 %s"), *(loc.ToString()));
+		APlaceableActor* spawnedTempPtr = GetWorld()->SpawnActor<APlaceableActor>(placeableObjectsList[0], loc, FRotator::ZeroRotator);
+		spawnedPlaceableObjects.Add(spawnedTempPtr);
+		return;
 	}
 
 	for (int32 index = 0; index < placeableObjectsList.Num(); index++)
 	{
-		APlaceableActor* spawnedTempPtr = GetWorld()->SpawnActor<APlaceableActor>(placeableObjectsList[index], tempLocation, FRotator::ZeroRotator);
+		UE_LOG(LogTemp, Warning, TEXT("OOOO SpawnPlaceableActors called 3"));
+		APlaceableActor* spawnedTempPtr = GetWorld()->SpawnActor<APlaceableActor>(placeableObjectsList[index], FVector::ZeroVector, FRotator::ZeroRotator);
 		spawnedPlaceableObjects.Add(spawnedTempPtr);
 	}
 
-	if (spawnedPlaceableObjects.Num() > 1)
+	if (placeableObjectsList.Num() > 1)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("OOOO SpawnPlaceableActors called 4"));
 		SortInDescendingOrder();
 		GenerateSpawnLocations();
 	}
@@ -96,11 +124,12 @@ void UMiniAreaComponent::SortInDescendingOrder()
 
 void UMiniAreaComponent::SetRandomSeed(int seedValue)
 {
-	if (spawnedPlaceableObjects.Num() > 0)
-	{
+	//if (spawnedPlaceableObjects.Num() > 0)
+	//{
+	UE_LOG(LogTemp, Warning, TEXT("OOOO SetRandomSeed called"));
 		ClearPreviousResult();
 		SpawnPlaceableActors();
-	}
+	//}
 }
 
 void UMiniAreaComponent::ClearPreviousResult()

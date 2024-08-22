@@ -10,7 +10,7 @@
 
 class AParentArea;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSeedModify, int32, inSeed);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSeedModify, int32, inSeed);
 
 UCLASS()
 class AUTOROOMCREATOR_API AFloorAreaManager : public AActor
@@ -20,6 +20,8 @@ class AUTOROOMCREATOR_API AFloorAreaManager : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AFloorAreaManager();
+
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnSeedModify, int32);
 
 private:
 	FVector2D areaMin;
@@ -72,7 +74,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Subarea")
 	TArray<TSubclassOf<class AParentArea>> subareasToSpawn;
 
-	UPROPERTY()
+	//UPROPERTY()
 	FOnSeedModify onSeedModify;
 
 	FCriticalSection delegateLock;
