@@ -4,6 +4,7 @@
 #include "MiniAreaComponent.h"
 #include "FloorAreaManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
 
 UMiniAreaComponent::UMiniAreaComponent()
 {
@@ -31,6 +32,7 @@ void UMiniAreaComponent::BeginPlay()
 	//{
 	//	SpawnPlaceableActors();
 	//}
+	
 	SetRandomSeed(50);
 }
 
@@ -86,9 +88,10 @@ void UMiniAreaComponent::SpawnPlaceableActors()
 		GetComponentLocation();
 		//tempLocation = GetComponentLocation();
 		
-		FVector loc = GetAttachmentRoot()->GetComponentLocation() + GetRelativeLocation();
+		FVector loc = GetComponentLocation();
+		FRotator rot = GetComponentRotation();
 		UE_LOG(LogTemp, Warning, TEXT("OOOO SpawnPlaceableActors spawn() called 2 %s"), *(loc.ToString()));
-		APlaceableActor* spawnedTempPtr = GetWorld()->SpawnActor<APlaceableActor>(placeableObjectsList[0], loc, FRotator::ZeroRotator);
+		APlaceableActor* spawnedTempPtr = GetWorld()->SpawnActor<APlaceableActor>(placeableObjectsList[0], loc, rot);
 		spawnedPlaceableObjects.Add(spawnedTempPtr);
 		return;
 	}
@@ -128,7 +131,9 @@ void UMiniAreaComponent::SetRandomSeed(int seedValue)
 	//{
 	UE_LOG(LogTemp, Warning, TEXT("OOOO SetRandomSeed called"));
 		ClearPreviousResult();
-		SpawnPlaceableActors();
+		FTimerHandle timerHandle;
+		GetWorld()->GetTimerManager().SetTimer(timerHandle, this, &UMiniAreaComponent::SpawnPlaceableActors, 0.20f, false);
+		//SpawnPlaceableActors();
 	//}
 }
 
